@@ -3,208 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>Loup-Garou Online</title>
-    <script src="https://socket.io"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background: #121212; color: #f0f0f0; height: 100vh; overflow: hidden; }
-
-        /* Écrans */
-        .ecran { display: none; height: 100vh; width: 100vw; }
-        .ecran.actif { display: flex; }
-
-        /* 1. Écran Pseudo */
-        #ecran-pseudo { justify-content: center; align-items: center; flex-direction: column; gap: 15px; }
-        .carte { background: #1e1e2e; padding: 30px; border-radius: 12px; text-align: center; width: 350px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #333; background: #2a2a3c; color: white; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 6px; background: #e94560; color: white; font-weight: bold; cursor: pointer; }
-        button:hover { background: #d63851; }
-
-        /* 2. Écran Home */
-        #ecran-home { justify-content: center; align-items: flex-start; padding-top: 60px; gap: 30px; }
-        .liste-salons { list-style: none; margin-top: 15px; text-align: left; }
-        .salon-item { display: flex; justify-content: space-between; align-items: center; background: #2a2a3c; padding: 10px; border-radius: 6px; margin-bottom: 8px; }
-        .salon-item button { width: auto; padding: 6px 12px; }
-
-        /* 3. Écran Jeu (Plateau à gauche + Chat à droite) */
-        #ecran-jeu { flex-direction: row; }
-        #zone-plateau { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1f2438 0%, #0f111a 100%); }
-        #infos-haut { position: absolute; top: 20px; text-align: center; }
-        #cercle-joueurs { position: relative; width: 450px; height: 450px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.1); }
-        
-        /* Joueur sur le cercle */
-        .joueur-pion { position: absolute; width: 80px; height: 80px; margin-left: -40px; margin-top: -40px; border-radius: 50%; background: #2a2a3c; border: 3px solid #4ecca3; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s, border-color 0.2s; font-size: 13px; text-align: center; }
-        .joueur-pion:hover { transform: scale(1.1); border-color: #e94560; }
-        .joueur-pion.mort { background: #1a1a1a; border-color: #555; color: #777; cursor: not-allowed; }
-        .joueur-pion .avatar { font-size: 24px; }
-
-        /* Chat à droite */
-        #zone-chat { width: 350px; background: #181824; border-left: 1px solid #2a2a3c; display: flex; flex-direction: column; }
-        #chat-header { padding: 15px; background: #1e1e2e; font-weight: bold; border-bottom: 1px solid #2a2a3c; }
-        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
-        .msg-systeme { color: #fca311; font-style: italic; }
-        #chat-input-zone { display: flex; padding: 10px; gap: 8px; background: #1e1e2e; }
-        #chat-input-zone input { margin: 0; }
-        #chat-input-zone button { width: auto; padding: 0 15px; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cloudflare.com"></script>
 </head>
 <body>
 
-<!-- 1. ÉCRAN PSEUDO -->
-<div id="ecran-pseudo" class="ecran actif">
-    <div class="carte">
-        <h2>🐺 Loup-Garou</h2>
-        <input type="text" id="input-pseudo" placeholder="Choisis ton pseudo...">
-        <button onclick="validerPseudo()">Entrer au village</button>
-    </div>
-</div>
-
-<!-- 2. ÉCRAN HOME -->
-<div id="ecran-home" class="ecran">
-    <div class="carte">
-        <h3>Créer une partie</h3>
-        <input type="text" id="input-nom-partie" placeholder="Nom du village (optionnel)">
-        <button onclick="creerPartie()">Créer et rejoindre</button>
-    </div>
-    <div class="carte">
-        <h3>Parties en attente</h3>
-        <ul id="liste-parties" class="liste-salons">
-            <li style="color: #777;">Aucune partie disponible...</li>
-        </ul>
-    </div>
-</div>
-
-<!-- 3. ÉCRAN DE JEU -->
-<div id="ecran-jeu" class="ecran">
-    <div id="zone-plateau">
-        <div id="infos-haut">
-            <h2 id="titre-salon">Salon</h2>
-            <p id="mon-role" style="color: #4ecca3; font-weight: bold; margin: 5px 0;">En attente du lancement...</p>
-            <button id="btn-lancer" onclick="lancerPartie()" style="width: auto; padding: 8px 20px; margin-top: 5px;">Lancer la partie</button>
-        </div>
-
-        <div id="cercle-joueurs"></div>
-    </div>
-
-    <div id="zone-chat">
-        <div id="chat-header">💬 Discussions & Actions</div>
-        <div id="chat-messages"></div>
-        <div id="chat-input-zone">
-            <input type="text" id="input-msg" placeholder="Écrire un message..." onkeypress="if(event.key==='Enter') envoyerMessage()">
-            <button onclick="envoyerMessage()">➤</button>
+    <!-- 1. ÉCRAN PSEUDO -->
+    <div id="ecran-pseudo" class="ecran actif">
+        <div class="carte">
+            <h2>🐺 Loup-Garou</h2>
+            <input type="text" id="input-pseudo" placeholder="Choisis ton pseudo..." onkeypress="if(event.key==='Enter') validerPseudo()">
+            <button id="btn-entrer" onclick="validerPseudo()">Entrer au village</button>
         </div>
     </div>
-</div>
 
-<script>
-    const socket = io();
-    let monPseudo = "";
-    let partieActuelle = "";
+    <!-- 2. ÉCRAN HOME -->
+    <div id="ecran-home" class="ecran">
+        <div class="carte">
+            <h3>Créer une partie</h3>
+            <input type="text" id="input-nom-partie" placeholder="Nom du village (optionnel)">
+            <button onclick="creerPartie()">Créer et rejoindre</button>
+        </div>
+        <div class="carte">
+            <h3>Parties en attente</h3>
+            <ul id="liste-parties" class="liste-salons">
+                <li class="texte-gris">Aucune partie disponible...</li>
+            </ul>
+        </div>
+    </div>
 
-    function afficherEcran(id) {
-        document.querySelectorAll('.ecran').forEach(e => e.classList.remove('actif'));
-        document.getElementById(id).classList.add('actif');
-    }
+    <!-- 3. ÉCRAN DE JEU -->
+    <div id="ecran-jeu" class="ecran">
+        <div id="zone-plateau">
+            <div id="infos-haut">
+                <h2 id="titre-salon">Salon</h2>
+                <p id="mon-role">En attente du lancement...</p>
+                <button id="btn-lancer" onclick="lancerPartie()">Lancer la partie</button>
+            </div>
 
-    // Étape 1 : Pseudo
-    function validerPseudo() {
-        monPseudo = document.getElementById('input-pseudo').value.trim();
-        if (!monPseudo) return alert("Entre un pseudo !");
-        afficherEcran('ecran-home');
-    }
+            <div id="cercle-joueurs"></div>
+        </div>
 
-    // Étape 2 : Home
-    socket.on('liste_parties', (parties) => {
-        const ul = document.getElementById('liste-parties');
-        if (parties.length === 0) {
-            ul.innerHTML = '<li style="color: #777;">Aucune partie disponible...</li>';
-            return;
-        }
-        ul.innerHTML = parties.map(p => `
-            <li class="salon-item">
-                <span>${p.nom} (${p.nb} joueurs)</span>
-                <button onclick="rejoindrePartie('${p.id}')">Rejoindre</button>
-            </li>
-        `).join('');
-    });
+        <div id="zone-chat">
+            <div id="chat-header">💬 Discussions & Actions</div>
+            <div id="chat-messages"></div>
+            <div id="chat-input-zone">
+                <input type="text" id="input-msg" placeholder="Écrire un message..." onkeypress="if(event.key==='Enter') envoyerMessage()">
+                <button onclick="envoyerMessage()">➤</button>
+            </div>
+        </div>
+    </div>
 
-    function creerPartie() {
-        const nom = document.getElementById('input-nom-partie').value.trim();
-        socket.emit('creer_partie', { pseudo: monPseudo, nom_partie: nom });
-    }
-
-    function rejoindrePartie(pid) {
-        socket.emit('rejoindre_partie', { pseudo: monPseudo, pid: pid });
-    }
-
-    // Étape 3 : Entrée en partie
-    socket.on('partie_rejointe', (data) => {
-        partieActuelle = data.pid;
-        document.getElementById('titre-salon').innerText = `${data.nom} (Code: ${data.pid})`;
-        afficherEcran('ecran-jeu');
-    });
-
-    function lancerPartie() {
-        socket.emit('lancer_partie', { pid: partieActuelle });
-    }
-
-    socket.on('ton_role', (data) => {
-        document.getElementById('mon-role').innerText = `Ton rôle : ${data.role}`;
-        document.getElementById('btn-lancer').style.display = 'none';
-    });
-
-    // Placement des joueurs en cercle
-    socket.on('etat_partie', (data) => {
-        const conteneur = document.getElementById('cercle-joueurs');
-        conteneur.innerHTML = "";
-        const total = data.joueurs.length;
-        const rayon = 200; // Rayon du cercle en px
-        const centre = 225; // Moitié de 450px
-
-        data.joueurs.forEach((j, index) => {
-            const angle = (index / total) * (2 * Math.PI) - (Math.PI / 2);
-            const x = centre + rayon * Math.cos(angle);
-            const y = centre + rayon * Math.sin(angle);
-
-            const pion = document.createElement('div');
-            pion.className = 'joueur-pion' + (j.vivant ? '' : ' mort');
-            pion.style.left = `${x}px`;
-            pion.style.top = `${y}px`;
-            
-            pion.innerHTML = `
-                <div class="avatar">${j.vivant ? '🧑' : '🪦'}</div>
-                <div>${j.pseudo}</div>
-            `;
-
-            if (j.vivant && data.phase !== 'lobby') {
-                pion.onclick = () => socket.emit('voter_joueur', { pid: partieActuelle, cible_sid: j.sid });
-            }
-
-            conteneur.appendChild(pion);
-        });
-    });
-
-    // Chat
-    function envoyerMessage() {
-        const input = document.getElementById('input-msg');
-        const texte = input.value.trim();
-        if (!texte) return;
-        socket.emit('envoyer_message', { pid: partieActuelle, texte: texte });
-        input.value = "";
-    }
-
-    socket.on('nouveau_message', (data) => {
-        const box = document.getElementById('chat-messages');
-        const div = document.createElement('div');
-        if (data.auteur === "Système") {
-            div.className = "msg-systeme";
-            div.innerText = data.texte;
-        } else {
-            div.innerHTML = `<strong>${data.auteur} :</strong> ${data.texte}`;
-        }
-        box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
-    });
-</script>
-
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
