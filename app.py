@@ -1,13 +1,13 @@
-import eventlet
-eventlet.monkey_patch() # Indispensable tout en haut pour Render
-
 import random
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, join_room, emit
 
 app = Flask(__name__, static_folder='statics')
 app.config['SECRET_KEY'] = 'cle-secrete-loup-garou'
-socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Mode 'threading' : 100% compatible Python 3.14 sans dépendances externes
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+
 
 # Stockage des parties en mémoire : { "code_salon": { "joueurs": {}, "phase": "lobby" } }
 parties = {}
