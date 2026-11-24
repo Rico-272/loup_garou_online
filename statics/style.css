@@ -1,35 +1,44 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
 body { background: #121212; color: #f0f0f0; height: 100vh; overflow: hidden; }
 
-/* Écrans */
 .ecran { display: none; height: 100vh; width: 100vw; }
 .ecran.actif { display: flex; }
-.texte-gris { color: #777; }
+.texte-gris { color: #888; font-size: 14px; }
 
 /* 1. Écran Pseudo */
 #ecran-pseudo { justify-content: center; align-items: center; }
-.carte { background: #1e1e2e; padding: 30px; border-radius: 12px; text-align: center; width: 350px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #333; background: #2a2a3c; color: white; }
-button { width: 100%; padding: 12px; border: none; border-radius: 6px; background: #e94560; color: white; font-weight: bold; cursor: pointer; }
+.carte { background: #1e1e2e; padding: 25px; border-radius: 12px; text-align: center; width: 360px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+.carte-large { width: 420px; }
+input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #333; background: #2a2a3c; color: white; }
+button { width: 100%; padding: 12px; border: none; border-radius: 6px; background: #e94560; color: white; font-weight: bold; cursor: pointer; margin-top: 8px; }
 button:hover { background: #d63851; }
 
-/* 2. Écran Home */
-#ecran-home { justify-content: center; align-items: flex-start; padding-top: 60px; gap: 30px; }
+/* 2. Écran Home & Rôles */
+#ecran-home { justify-content: center; align-items: flex-start; padding-top: 40px; gap: 30px; overflow-y: auto; }
+.colonne-droite-home { display: flex; flex-direction: column; gap: 20px; }
+.menu-roles { background: #252538; padding: 15px; border-radius: 8px; margin: 10px 0; text-align: left; }
+.menu-roles h4 { margin-bottom: 10px; color: #fca311; font-size: 14px; }
+.ligne-role { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 14px; }
+.ligne-role input { width: 65px; margin: 0; padding: 5px; text-align: center; }
+
+.badge-admin { background: #4ecca3; color: #121212; font-size: 11px; padding: 2px 6px; border-radius: 4px; vertical-align: middle; }
+.admin-input-group { display: flex; gap: 8px; margin-top: 8px; }
+.admin-input-group input { margin: 0; }
+.admin-input-group button { width: auto; margin: 0; padding: 0 15px; background: #4ecca3; color: #121212; }
+
 .liste-salons { list-style: none; margin-top: 15px; text-align: left; }
-.salon-item { display: flex; justify-content: space-between; align-items: center; background: #2a2a3c; padding: 10px; border-radius: 6px; margin-bottom: 8px; }
-.salon-item button { width: auto; padding: 6px 12px; }
+.salon-item { display: flex; justify-content: space-between; align-items: center; background: #2a2a3c; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 14px; }
+.salon-item button { width: auto; padding: 6px 12px; margin: 0; }
 
 /* 3. Écran Jeu */
 #ecran-jeu { flex-direction: row; }
 #zone-plateau { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1f2438 0%, #0f111a 100%); }
 #infos-haut { position: absolute; top: 20px; text-align: center; }
 #mon-role { color: #4ecca3; font-weight: bold; margin: 5px 0; }
-#btn-lancer { width: auto; padding: 8px 20px; margin-top: 5px; }
+#btn-lancer { width: auto; padding: 8px 20px; }
 
-#cercle-joueurs { position: relative; width: 450px; height: 450px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.1); }
-
-/* Joueur sur le cercle */
-.joueur-pion { position: absolute; width: 80px; height: 80px; margin-left: -40px; margin-top: -40px; border-radius: 50%; background: #2a2a3c; border: 3px solid #4ecca3; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s, border-color 0.2s; font-size: 13px; text-align: center; }
+#cercle-joueurs { position: relative; width: 450px; height: 450px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.1); margin-top: 40px; }
+.joueur-pion { position: absolute; width: 80px; height: 80px; margin-left: -40px; margin-top: -40px; border-radius: 50%; background: #2a2a3c; border: 3px solid #4ecca3; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; font-size: 12px; text-align: center; }
 .joueur-pion:hover { transform: scale(1.1); border-color: #e94560; }
 .joueur-pion.mort { background: #1a1a1a; border-color: #555; color: #777; cursor: not-allowed; }
 .joueur-pion .avatar { font-size: 24px; }
@@ -41,4 +50,4 @@ button:hover { background: #d63851; }
 .msg-systeme { color: #fca311; font-style: italic; }
 #chat-input-zone { display: flex; padding: 10px; gap: 8px; background: #1e1e2e; }
 #chat-input-zone input { margin: 0; }
-#chat-input-zone button { width: auto; padding: 0 15px; }
+#chat-input-zone button { width: auto; padding: 0 15px; margin: 0; }
