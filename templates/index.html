@@ -1,1 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Loup-Garou en ligne</title>
+    <script src="https://socket.io"></script>
+    <style>
+        body { font-family: sans-serif; background: #1a1a2e; color: white; text-align: center; padding: 20px; }
+        .box { background: #16213e; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; }
+        input, button { padding: 10px; margin: 5px; width: 80%; border-radius: 4px; border: none; }
+        button { background: #e94560; color: white; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="box" id="ecran-connexion">
+    <h2>🐺 Loup-Garou</h2>
+    <input type="text" id="pseudo" placeholder="Ton pseudo">
+    <input type="text" id="salon" placeholder="Code du salon (ex: 1234)">
+    <button onclick="rejoindre()">Rejoindre le salon</button>
+</div>
+
+<div class="box" id="ecran-jeu" style="display:none;">
+    <h3 id="titre-phase">En attente des joueurs...</h3>
+    <p id="affichage-role" style="color: #fca311; font-weight: bold;"></p>
+    <h4>Joueurs connectés :</h4>
+    <ul id="liste-joueurs" style="list-style: none; padding: 0;"></ul>
+    <button id="btn-lancer" onclick="lancer()">Lancer la partie</button>
+</div>
+
+<script>
+    const socket = io();
+    let salonActuel = "";
+
+    function rejoindre() {
+        const pseudo = document.getElementById('pseudo').value;
+        salonActuel = document.getElementById('salon').value;
+        if (!pseudo || !salonActuel) return alert("Remplis les deux champs !");
+
+        socket.emit('rejoindre_salon', { pseudo: pseudo, salon: salonActuel });
+        document.getElementById('ecran-connexion').style.display = 'none';
+        document.getElementById('ecran-jeu').style.display = 'block';
+    }
+
+    function lancer() {
+        socket.emit('lancer_partie', { salon: salonActuel });
+    }
+
+    socket.on('mise_a_jour_salon', (data) => {
+        const ul = document.getElementById('liste-joueurs');
+        ul.innerHTML = data.joueurs.map(j => `<li>${j}</li>`).join('');
+    });
+
+    socket.on('ton_role', (data) => {
+        document.getElementById('affichage-role').innerText = "Ton rôle secret : " + data.role;
+        document.getElementById('btn-lancer').style.display = 'none';
+    });
+
+    socket.on('changement_phase', (data) => {
+        document.getElementById('titre-phase').innerText = data.phase;
+    });
+
+    socket.on('erreur', (data) => alert(data.message));
+</script>
+
+</body>
+</html>
 
