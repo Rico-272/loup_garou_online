@@ -188,6 +188,11 @@ def handle_join(data):
     liste_pseudos = [j['pseudo'] for j in parties[salon]['joueurs'].values()]
     emit('mise_a_jour_salon', {'joueurs': liste_pseudos}, room=salon)
 
+@socketio.on('demander_parties')
+def handle_get_parties():
+    diffuser_liste_parties()
+
+
 @socketio.on('lancer_partie')
 def handle_start(data):
     salon = data['salon']
