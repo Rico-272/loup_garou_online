@@ -13,22 +13,60 @@
         <div class="carte">
             <h2>🐺 Loup-Garou</h2>
             <input type="text" id="input-pseudo" placeholder="Choisis ton pseudo..." onkeypress="if(event.key==='Enter') validerPseudo()">
-            <button id="btn-entrer" onclick="validerPseudo()">Entrer au village</button>
+            <button onclick="validerPseudo()">Entrer au village</button>
         </div>
     </div>
 
     <!-- 2. ÉCRAN HOME -->
     <div id="ecran-home" class="ecran">
-        <div class="carte">
-            <h3>Créer une partie</h3>
+        <!-- Colonne Création + Composition des Rôles -->
+        <div class="carte carte-large">
+            <h3>Créer un village <span id="badge-admin" class="badge-admin" style="display:none;">ADMIN</span></h3>
             <input type="text" id="input-nom-partie" placeholder="Nom du village (optionnel)">
-            <button onclick="creerPartie()">Créer et rejoindre</button>
+            
+            <div class="menu-roles">
+                <h4>Composition des rôles (<span id="compteur-joueurs">5</span> / <span id="limite-max">20</span> joueurs)</h4>
+                <div class="ligne-role">
+                    <span>🐺 Loup-Garou</span>
+                    <input type="number" id="role-loup" value="1" min="0" max="50" onchange="majCompteur()">
+                </div>
+                <div class="ligne-role">
+                    <span>🧑‍🌾 Villageois</span>
+                    <input type="number" id="role-villageois" value="2" min="0" max="50" onchange="majCompteur()">
+                </div>
+                <div class="ligne-role">
+                    <span>🔮 Voyante</span>
+                    <input type="number" id="role-voyante" value="1" min="0" max="50" onchange="majCompteur()">
+                </div>
+                <div class="ligne-role">
+                    <span>🧪 Sorcière</span>
+                    <input type="number" id="role-sorciere" value="1" min="0" max="50" onchange="majCompteur()">
+                </div>
+                <div class="ligne-role">
+                    <span>🏹 Chasseur</span>
+                    <input type="number" id="role-chasseur" value="0" min="0" max="50" onchange="majCompteur()">
+                </div>
+            </div>
+
+            <button id="btn-creer-partie" onclick="creerPartie()">Créer et rejoindre</button>
         </div>
-        <div class="carte">
-            <h3>Parties en attente</h3>
-            <ul id="liste-parties" class="liste-salons">
-                <li class="texte-gris">Aucune partie disponible...</li>
-            </ul>
+
+        <!-- Colonne Liste des parties + Mode Admin -->
+        <div class="colonne-droite-home">
+            <div class="carte">
+                <h3>Parties en attente</h3>
+                <ul id="liste-parties" class="liste-salons">
+                    <li class="texte-gris">Aucune partie disponible...</li>
+                </ul>
+            </div>
+
+            <div class="carte carte-admin">
+                <h4>🔧 Mode Développeur / Admin</h4>
+                <div class="admin-input-group">
+                    <input type="password" id="input-mdp-admin" placeholder="Mot de passe admin...">
+                    <button onclick="activerAdmin()">OK</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -37,6 +75,7 @@
         <div id="zone-plateau">
             <div id="infos-haut">
                 <h2 id="titre-salon">Salon</h2>
+                <p id="compteur-salon" class="texte-gris"></p>
                 <p id="mon-role">En attente du lancement...</p>
                 <button id="btn-lancer" onclick="lancerPartie()">Lancer la partie</button>
             </div>
